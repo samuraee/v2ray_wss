@@ -15,20 +15,20 @@ _magenta() { echo -e ${magenta}$*${none}; }
 _cyan() { echo -e ${cyan}$*${none}; }
 
 error() {
-    echo -e "\n$red 输入错误! $none\n"
+    echo -e "\n$red Incorrect input! $none\n"
 }
 
 pause() {
-    read -rsp "$(echo -e "按 $green Enter 回车键 $none 继续....或按 $red Ctrl + C $none 取消.")" -d $'\n'
+    read -rsp "$(echo -e "according to $green Enter Enter $none to continue....or $red Ctrl + C $none to cancel.")" -d $'\n'
     echo
 }
 
 # 说明
 echo
 echo -e "$yellow此脚本仅兼容于Debian 10+系统. 如果你的系统不符合,请Ctrl+C退出脚本$none"
-echo -e "可以去 ${cyan}https://github.com/crazypeace/v2ray_wss${none} 查看脚本整体思路和关键命令, 以便针对你自己的系统做出调整."
-echo -e "有问题加群 ${cyan}https://t.me/+ISuvkzFGZPBhMzE1${none}"
-echo "本脚本支持带参数执行, 在参数中输入域名, 网络栈, UUID, path. 详见GitHub."
+echo -e "可以去 ${cyan}https://github.com/crazypeace/v2ray_wss${none} Check out the script's general idea and key commands to make adjustments for your own system."
+echo -e "If there is a problem, join the group ${cyan}https://t.me/+ISuvkzFGZPBhMzE1${none}"
+echo "This script supports execution with parameters. Enter the domain name, network stack, UUID, path in the parameters. See GitHub for details."
 echo "----------------------------------------------------------------"
 
 # 执行脚本带参数
@@ -82,7 +82,7 @@ apt install -y curl sudo jq qrencode
 
 # 指定安装V2ray v4.45.2版本
 echo
-echo -e "$yellow指定安装V2ray v4.45.2版本$none"
+echo -e "$yellows pecified installation V2ray v4.45.2 version$none"
 echo "----------------------------------------------------------------"
 bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh) --version 4.45.2
 
@@ -90,7 +90,7 @@ systemctl enable v2ray
 
 # 安装Caddy最新版本
 echo
-echo -e "$yellow安装Caddy最新版本$none"
+echo -e "$yellow Install the latest version of Caddy $none"
 echo "----------------------------------------------------------------"
 sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg --yes
@@ -102,7 +102,7 @@ systemctl enable caddy
 
 # 打开BBR
 echo
-echo -e "$yellow打开BBR$none"
+echo -e "$yellow Open BBR $none"
 echo "----------------------------------------------------------------"
 sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
 sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
@@ -113,15 +113,15 @@ echo
 
 # 配置 VLESS_WebSocket_TLS 模式, 需要:域名, 分流path, 反代网站, V2ray内部端口, UUID
 echo
-echo -e "$yellow配置 VLESS_WebSocket_TLS 模式$none"
+echo -e "$yellow Configure VLESS_WebSocket_TLS mode $none"
 echo "----------------------------------------------------------------"
 
 # UUID
 if [[ -z $v2ray_id ]]; then
     uuid=$(cat /proc/sys/kernel/random/uuid)
     while :; do
-        echo -e "请输入 "$yellow"V2RayID"$none" "
-        read -p "$(echo -e "(默认ID: ${cyan}${uuid}$none):")" v2ray_id
+        echo -e "please enter "$yellow"V2RayID"$none" "
+        read -p "$(echo -e "(default ID: ${cyan}${uuid}$none):")" v2ray_id
         [ -z "$v2ray_id" ] && v2ray_id=$uuid
         case $(echo $v2ray_id | sed 's/[a-z0-9]\{8\}-[a-z0-9]\{4\}-[a-z0-9]\{4\}-[a-z0-9]\{4\}-[a-z0-9]\{12\}//g') in
         "")
@@ -143,24 +143,24 @@ fi
 if [[ -z $v2ray_port ]]; then
     random=$(shuf -i20001-65535 -n1)
     while :; do
-        echo -e "请输入 "$yellow"V2Ray"$none" 端口 ["$magenta"1-65535"$none"], 不能选择 "$magenta"80"$none" 或 "$magenta"443"$none" 端口"
-        read -p "$(echo -e "(默认端口port: ${cyan}${random}$none):")" v2ray_port
+        echo -e "please enter "$yellow"V2Ray"$none" port ["$magenta"1-65535"$none"], can't choose "$magenta"80"$none" or "$magenta"443"$none" port"
+        read -p "$(echo -e "(default port: ${cyan}${random}$none):")" v2ray_port
         [ -z "$v2ray_port" ] && v2ray_port=$random
         case $v2ray_port in
         80)
             echo
-            echo " ...都说了不能选择 80 端口了咯....."
+            echo " ...I said you can't choose port 80......"
             error
             ;;
         443)
             echo
-            echo " ..都说了不能选择 443 端口了咯....."
+            echo " ..I said you can't choose port 443......"
             error
             ;;
         [1-9] | [1-9][0-9] | [1-9][0-9][0-9] | [1-9][0-9][0-9][0-9] | [1-5][0-9][0-9][0-9][0-9] | 6[0-4][0-9][0-9][0-9] | 65[0-4][0-9][0-9] | 655[0-3][0-5])
             echo
             echo
-            echo -e "$yellow 内部 V2Ray 端口Internal port = $cyan$v2ray_port$none"
+            echo -e "$yellow internal V2Ray port Internal port = $cyan$v2ray_port$none"
             echo "----------------------------------------------------------------"
             echo
             break
@@ -176,12 +176,12 @@ fi
 if [[ -z $domain ]]; then
     while :; do
         echo
-        echo -e "请输入一个 ${magenta}正确的域名${none} Input your domain"
-        read -p "(例如: mydomain.com): " domain
+        echo -e "please neter a ${magenta} correct domain name ${none} Input your domain"
+        read -p "(For example: mydomain.com): " domain
         [ -z "$domain" ] && error && continue
         echo
         echo
-        echo -e "$yellow 你的域名Domain = $cyan$domain$none"
+        echo -e "$yellow your domain name Domain = $cyan$domain$none"
         echo "----------------------------------------------------------------"
         break
     done
@@ -189,8 +189,8 @@ fi
 
 # 网络栈
 if [[ -z $netstack ]]; then
-    echo -e "如果你的小鸡是${magenta}双栈(同时有IPv4和IPv6的IP)${none}，请选择你把v2ray搭在哪个'网口'上"
-    echo "如果你不懂这段话是什么意思, 请直接回车"
+    echo -e "If your chick is ${magenta} dual-stack (with both IPv4 and IPv6 IP) ${none}, please choose which 'network port' you put v2ray on"
+    echo "If you don't understand what this passage means, please enter directly"
     read -p "$(echo -e "Input ${cyan}4${none} for IPv4, ${cyan}6${none} for IPv6:") " netstack
     if [[ $netstack == "4" ]]; then
         domain_resolve=$(curl -sH 'accept: application/dns-json' "https://cloudflare-dns.com/dns-query?name=$domain&type=A" | jq -r '.Answer[0].data')
@@ -210,7 +210,7 @@ if [[ -z $netstack ]]; then
 
     # 本机 IP
     if [[ $netstack == "4" ]]; then
-        ip=$(curl -4 -s https://api.myip.la)
+        ip=$(curl -4 -s https://ifcondif.me)
     elif [[ $netstack == "6" ]]; then 
         ip=$(curl -6 -s https://api.myip.la)
     else
@@ -236,7 +236,7 @@ if [[ -z $netstack ]]; then
     else
         echo
         echo
-        echo -e "$yellow 域名解析 = ${cyan}我确定已经有解析了$none"
+        echo -e "$yellow domain name resolution = ${cyan} I am sure it has been resolved $none"
         echo "----------------------------------------------------------------"
         echo
     fi
@@ -246,22 +246,22 @@ fi
 if [[ -z $path ]]; then
     default_path=$(echo $v2ray_id | sed 's/.*\([a-z0-9]\{12\}\)$/\1/g')
     while :; do
-        echo -e "请输入想要 ${magenta} 用来分流的路径 $none , 例如 /v2raypath , 那么只需要输入 v2raypath 即可"
+        echo -e "Please enter the path $none that you want ${magenta} to use for shunting, for example /v2raypath , then you only need to enter v2raypath"
         echo "Input the WebSocket path for V2ray"
-        read -p "$(echo -e "(默认path: [${cyan}${default_path}$none]):")" path
+        read -p "$(echo -e "(default path: [${cyan}${default_path}$none]):")" path
         [[ -z $path ]] && path=$default_path
 
         case $path in
         *[/$]*)
             echo
-            echo -e " 由于这个脚本太辣鸡了..所以分流的路径不能包含$red / $none或$red $ $none这两个符号.... "
+            echo -e " Because this script is too spicy.. so the distribution path cannot contain the two symbols $red / $none or $red $ $none.... "
             echo
             error
             ;;
         *)
             echo
             echo
-            echo -e "$yellow 分流的路径Path = ${cyan}/${path}$none"
+            echo -e "Path of $yellow diversion Path = ${cyan}/${path}$none"
             echo "----------------------------------------------------------------"
             echo
             break
@@ -273,22 +273,22 @@ fi
 # 反代伪装网站
 if [[ -z $proxy_site ]]; then
     while :; do
-        echo -e "请输入 ${magenta}一个正确的 $none ${cyan}网址$none 用来作为 ${cyan}网站的伪装$none , 例如 https://zelikk.blogspot.com"
+        echo -e "Please enter ${magenta} a correct $none ${cyan} URL $none is used as ${cyan} website disguise $none, for example https://zelikk.blogspot.com"
         echo "Input a camouflage site. When GFW visit your domain, the camouflage site will display."
-        read -p "$(echo -e "(默认site: [${cyan}https://zelikk.blogspot.com${none}]):")" proxy_site
+        read -p "$(echo -e "(default site: [${cyan}https://zelikk.blogspot.com${none}]):")" proxy_site
         [[ -z $proxy_site ]] && proxy_site="https://zelikk.blogspot.com"
 
         case $proxy_site in
         *[#$]*)
             echo
-            echo -e " 由于这个脚本太辣鸡了..所以伪装的网址不能包含$red # $none或$red $ $none这两个符号.... "
+            echo -e " Because this script is too spicy.. so the disguised URL cannot contain the two symbols $red # $none or $red $ $none.... "
             echo
             error
             ;;
         *)
             echo
             echo
-            echo -e "$yellow 伪装的网址camouflage site = ${cyan}${proxy_site}$none"
+            echo -e "$yellow Camouflage site = ${cyan}${proxy_site}$none"
             echo "----------------------------------------------------------------"
             echo
             break
@@ -299,7 +299,7 @@ fi
 
 # 配置 /usr/local/etc/v2ray/config.json
 echo
-echo -e "$yellow配置 /usr/local/etc/v2ray/config.json$none"
+echo -e "$yellow configuration /usr/local/etc/v2ray/config.json$none"
 echo "----------------------------------------------------------------"
 cat >/usr/local/etc/v2ray/config.json <<-EOF
 { // vless + WebSocket + TLS
@@ -452,7 +452,7 @@ EOF
 
 # 配置 /etc/caddy/Caddyfile
 echo
-echo -e "$yellow配置 /etc/caddy/Caddyfile$none"
+echo -e "$yellow configuration /etc/caddy/Caddyfile$none"
 echo "----------------------------------------------------------------"
 cat >/etc/caddy/Caddyfile <<-EOF
 $domain
